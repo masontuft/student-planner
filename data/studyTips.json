@@ -1,0 +1,10 @@
+[
+  { "id": 1, "tip": "Break large assignments into smaller tasks so they feel easier to complete.", "category": "focus" },
+  { "id": 2, "tip": "Review your notes within 24 hours of class to improve long-term retention.", "category": "memory" },
+  { "id": 3, "tip": "Use the Pomodoro technique: 25 minutes of focused work followed by a 5-minute break.", "category": "focus" },
+  { "id": 4, "tip": "Study the hardest subject first while your focus is sharpest.", "category": "planning" },
+  { "id": 5, "tip": "Silence notifications during study blocks to protect your deep work time.", "category": "focus" },
+  { "id": 6, "tip": "Rewrite key concepts in your own words rather than re-reading passively.", "category": "memory" },
+  { "id": 7, "tip": "Set a specific goal for each study session, not just a time limit.", "category": "planning" },
+  { "id": 8, "tip": "Use spaced repetition: review material at increasing intervals to lock it in.", "category": "memory" }
+]
