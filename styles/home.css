@@ -136,39 +136,6 @@ h1 {
   background: var(--color-primary-dark);
 }
 
-/* --- Info grid (What This App Does) --- */
-.intro {
-  margin: 2rem 0;
-}
-
-.intro h2 {
-  color: var(--color-primary-dark);
-  margin-bottom: 1rem;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-}
-
-.info-grid article {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 1.25rem;
-  box-shadow: var(--shadow-soft);
-}
-
-.info-grid h3 {
-  color: var(--color-primary-dark);
-  margin: 0 0 0.5rem;
-}
-
-.info-grid p {
-  color: var(--color-muted);
-  margin: 0;
-}
 
 /* --- Form section --- */
 .planner-section {
@@ -520,8 +487,7 @@ h1 {
     grid-template-columns: 1fr;
   }
 
-  .summary-grid,
-  .info-grid {
+  .summary-grid {
     grid-template-columns: 1fr;
   }
 
