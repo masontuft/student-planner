@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Study Buddy Planner</title>
-  <meta name="description" content="A student planner app for assignments, study sessions, and deadlines.">
+  <meta name="description" content="A student planner web app for tracking assignments, study goals, and deadlines.">
+  <meta name="author" content="Team 2">
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/home.css">
+  <script src="scripts/main.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -19,10 +21,13 @@
       </a>
 
       <nav class="main-nav" aria-label="Main navigation">
-        <a href="index.html" aria-current="page">Today</a>
-        <a href="#">Week</a>
-        <a href="#">Tasks</a>
-        <a href="#">Settings</a>
+        <button id="menu-button" aria-label="Open navigation menu">☰</button>
+        <ul id="nav-menu">
+          <li><a href="index.html" aria-current="page" class="active">Home</a></li>
+          <li><a href="planner.html">Planner</a></li>
+          <li><a href="tips.html">Study Tips</a></li>
+          <li><a href="#">Settings</a></li>
+        </ul>
       </nav>
     </div>
   </header>
@@ -31,11 +36,12 @@
     <section class="hero-section">
       <div>
         <p class="eyebrow">Student planning dashboard</p>
-        <h1>Plan your school week in one simple place.</h1>
+        <h1>Keep Your Assignments in One Place</h1>
         <p class="hero-text">
-          Study Buddy Planner helps students organize assignments, study sessions,
-          and deadlines across school, work, and personal life.
+          Study Buddy Planner helps students track assignments, due dates,
+          priorities, and study goals in a simple and organized way.
         </p>
+        <a href="#assignment-form" class="button">Add an Assignment</a>
       </div>
 
       <div class="date-card">
@@ -64,10 +70,119 @@
         <p>Upcoming due dates will appear in this section.</p>
       </article>
     </section>
+
+    <section class="intro">
+      <h2>What This App Does</h2>
+      <div class="info-grid">
+        <article>
+          <h3>Track Assignments</h3>
+          <p>
+            Add school assignments, projects, quizzes, and study tasks
+            so you do not forget important deadlines.
+          </p>
+        </article>
+
+        <article>
+          <h3>Set Priorities</h3>
+          <p>
+            Choose whether a task is low, medium, or high priority so
+            you know what needs your attention first.
+          </p>
+        </article>
+
+        <article>
+          <h3>Save Your Progress</h3>
+          <p>
+            Your assignments will be saved using localStorage so they
+            stay on the page even after refreshing.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="planner-section">
+      <h2>Add a Study Task</h2>
+
+      <form id="assignment-form">
+        <label for="assignment-name">Assignment Name</label>
+        <input
+          type="text"
+          id="assignment-name"
+          name="assignment-name"
+          placeholder="Example: Math Chapter 5 Homework"
+          required
+        >
+
+        <label for="subject">Class Subject</label>
+        <select id="subject" name="subject" required>
+          <option value="">Choose a subject</option>
+          <option value="Math">Math</option>
+          <option value="Science">Science</option>
+          <option value="English">English</option>
+          <option value="History">History</option>
+          <option value="Computer Science">Computer Science</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <label for="due-date">Due Date</label>
+        <input
+          type="date"
+          id="due-date"
+          name="due-date"
+          required
+        >
+
+        <label for="priority">Priority Level</label>
+        <select id="priority" name="priority" required>
+          <option value="">Choose priority</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+
+        <label for="notes">Notes</label>
+        <textarea
+          id="notes"
+          name="notes"
+          rows="4"
+          placeholder="Add any helpful notes here..."
+        ></textarea>
+
+        <button type="submit">Save Assignment</button>
+      </form>
+    </section>
+
+    <section class="task-section">
+      <h2>My Assignments</h2>
+      <p class="section-note">Saved assignments will appear below.</p>
+      <div id="task-list" class="task-list"></div>
+    </section>
+
+    <section class="study-tip-section">
+      <h2>Study Tip of the Day</h2>
+      <div id="study-tip-card">
+        <p>
+          Break large assignments into smaller tasks so they feel easier
+          to complete.
+        </p>
+      </div>
+      <button id="new-tip-button">Show Another Tip</button>
+    </section>
+
+    <section class="modal-section">
+      <dialog id="task-modal">
+        <div class="modal-content">
+          <button id="close-modal" aria-label="Close task details">X</button>
+          <h2>Assignment Details</h2>
+          <p id="modal-text">More assignment details will appear here.</p>
+        </div>
+      </dialog>
+    </section>
   </main>
 
   <footer class="site-footer">
-    <p>&copy; 2026 Study Buddy Planner | WDD 231 Team Project</p>
+    <p>&copy; <span id="current-year"></span> Study Buddy Planner | WDD 231 Team Project</p>
+    <p id="last-modified"></p>
   </footer>
 </body>
 </html>
