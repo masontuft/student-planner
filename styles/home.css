@@ -228,6 +228,24 @@ h1 {
   gap: 1rem;
 }
 
+.task-list-completed {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.completed-heading {
+  margin: 1.5rem 0 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+}
+
+.show-more-btn {
+  display: block;
+  margin: 1rem auto 0;
+}
+
 /* --- Task cards --- */
 .task-card {
   background: var(--color-surface);
@@ -479,6 +497,10 @@ h1 {
   }
 
   .task-list {
+    grid-template-columns: 1fr;
+  }
+
+  .task-list-completed {
     grid-template-columns: 1fr;
   }
 }

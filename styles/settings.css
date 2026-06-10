@@ -1,0 +1,373 @@
+/* --- Settings page layout --- */
+
+.settings-hero {
+  margin-bottom: 2rem;
+}
+
+.settings-hero h1 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  color: var(--color-primary-dark);
+  margin: 0 0 0.4rem;
+}
+
+.settings-hero p {
+  color: var(--color-muted);
+  margin: 0;
+}
+
+/* --- Settings cards --- */
+
+.settings-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.settings-card-danger {
+  border-color: #f5c6c6;
+}
+
+.settings-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.settings-card-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.settings-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.settings-card-title h2 {
+  font-size: 1.1rem;
+  color: var(--color-primary-dark);
+  margin: 0 0 0.2rem;
+}
+
+.settings-card-title p {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.settings-note {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  margin: 0 0 1rem;
+}
+
+.settings-error {
+  color: #c0392b;
+  font-size: 0.9rem;
+  margin: 0 0 1rem;
+}
+
+/* --- Connection badge --- */
+
+.connection-badge {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+}
+
+.connection-badge[data-status="disconnected"] {
+  background: #f1f3f6;
+  color: var(--color-muted);
+}
+
+.connection-badge[data-status="connected"] {
+  background: #eafaf1;
+  color: #1e8449;
+}
+
+.connection-badge[data-status="connecting"] {
+  background: #fef9ec;
+  color: #b07a00;
+}
+
+/* --- Canvas connected account row --- */
+
+.canvas-account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+}
+
+.canvas-account-name {
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  margin: 0 0 0.2rem;
+}
+
+.canvas-account-email {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* --- Canvas courses list --- */
+
+.canvas-courses-section h3 {
+  font-size: 0.95rem;
+  color: var(--color-primary-dark);
+  margin: 0 0 0.75rem;
+}
+
+.canvas-course-list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.canvas-course-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.85rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.canvas-course-name {
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.canvas-course-code {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+/* --- Feed URL form --- */
+
+.canvas-feed-form label {
+  display: block;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.feed-input-row {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.feed-input-row input[type="url"] {
+  flex: 1;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  min-width: 0;
+}
+
+.feed-input-row input[type="url"]:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+/* --- Sync row --- */
+
+.sync-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* --- Buttons --- */
+
+.button-canvas {
+  background: #e66000;
+  color: white;
+}
+
+.button-canvas:hover,
+.button-canvas:focus {
+  background: #c25500;
+}
+
+.button-secondary {
+  background: #eef3ff;
+  color: var(--color-primary);
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: inline-block;
+}
+
+.button-secondary:hover {
+  background: #dce7ff;
+}
+
+.button-outline {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.button-outline:hover {
+  background: #eef3ff;
+}
+
+.button-danger {
+  background: #c0392b;
+  color: white;
+}
+
+.button-danger:hover,
+.button-danger:focus {
+  background: #a93226;
+}
+
+/* --- Preferences list --- */
+
+.prefs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pref-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+}
+
+.pref-row:last-child {
+  border-bottom: none;
+}
+
+.pref-label {
+  display: block;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+
+.pref-desc {
+  display: block;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+/* Toggle switch styling */
+.pref-row input[type="checkbox"] {
+  flex-shrink: 0;
+  appearance: none;
+  width: 44px;
+  height: 24px;
+  background: var(--color-border);
+  border-radius: 999px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.pref-row input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.pref-row input[type="checkbox"]:checked {
+  background: var(--color-primary);
+}
+
+.pref-row input[type="checkbox"]:checked::after {
+  transform: translateX(20px);
+}
+
+.pref-row input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* --- Confirm modal actions --- */
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  justify-content: flex-end;
+}
+
+/* --- Responsive --- */
+
+@media (max-width: 760px) {
+  .settings-card {
+    padding: 1.25rem;
+  }
+
+  .settings-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .canvas-account-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .feed-input-row {
+    flex-direction: column;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+}

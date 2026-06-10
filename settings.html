@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Study Buddy Planner</title>
+  <meta name="description" content="Connect your Canvas account and manage your Study Buddy Planner settings.">
+  <meta name="author" content="Team 2">
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/home.css">
+  <link rel="stylesheet" href="styles/settings.css">
+  <script src="scripts/settings.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-content">
+      <a class="logo" href="index.html" aria-label="Study Buddy Planner home">
+        <span class="logo-mark">SB</span>
+        <span>Study Buddy Planner</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <button id="menu-button" aria-label="Open navigation menu">☰</button>
+        <ul id="nav-menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="planner.html">Planner</a></li>
+          <li><a href="tips.html">Study Tips</a></li>
+          <li><a href="settings.html" aria-current="page" class="active">Settings</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="settings-hero">
+      <h1>Settings</h1>
+      <p>Manage your account connections and preferences.</p>
+    </section>
+
+    <!-- Canvas Integration -->
+    <section class="settings-card" id="canvas-section">
+      <div class="settings-card-header">
+        <div class="settings-card-title">
+          <span class="settings-icon" aria-hidden="true">🎓</span>
+          <div>
+            <h2>Canvas LMS</h2>
+            <p>Sync assignments and due dates from your BYUI Canvas account.</p>
+          </div>
+        </div>
+        <span class="connection-badge" id="canvas-badge" data-status="disconnected">Not connected</span>
+      </div>
+
+      <!-- Disconnected state -->
+      <div id="canvas-disconnected">
+        <p class="settings-note">
+          Find your feed URL in Canvas: <strong>Calendar &rarr; Calendar Feed</strong>
+          (bottom-right corner of the calendar page). Copy the link and paste it below.
+        </p>
+        <form id="canvas-feed-form" class="canvas-feed-form">
+          <label for="canvas-feed-url">Canvas Calendar Feed URL</label>
+          <div class="feed-input-row">
+            <input
+              type="url"
+              id="canvas-feed-url"
+              name="canvas-feed-url"
+              placeholder="https://byui.instructure.com/feeds/calendars/user_…"
+              autocomplete="off"
+              required
+            >
+            <button type="submit" class="button button-canvas">Connect</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Connected state (hidden until feed is saved) -->
+      <div id="canvas-connected" hidden>
+        <div class="canvas-account-row">
+          <div class="canvas-account-info">
+            <p class="canvas-account-name">Calendar feed connected</p>
+            <p class="canvas-account-email" id="canvas-feed-display">—</p>
+          </div>
+          <button class="button button-outline" id="canvas-disconnect-btn">Disconnect</button>
+        </div>
+
+        <div class="canvas-courses-section">
+          <h3>Upcoming Assignments</h3>
+          <p class="settings-note" id="canvas-courses-note">Sync to import your assignments.</p>
+          <ul class="canvas-course-list" id="canvas-course-list" aria-label="Canvas assignments preview"></ul>
+          <div class="sync-row">
+            <button class="button button-secondary" id="canvas-sync-btn">Sync Assignments Now</button>
+            <p class="settings-note" id="canvas-last-synced" hidden></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error state (hidden until needed) -->
+      <div id="canvas-error" hidden>
+        <p class="settings-error" id="canvas-error-msg">Something went wrong connecting to Canvas.</p>
+        <button class="button button-outline" id="canvas-retry-btn">Try Again</button>
+      </div>
+    </section>
+
+    <!-- App Preferences -->
+    <section class="settings-card">
+      <div class="settings-card-header">
+        <div class="settings-card-title">
+          <span class="settings-icon" aria-hidden="true">⚙️</span>
+          <div>
+            <h2>Preferences</h2>
+            <p>Adjust how the planner behaves.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="prefs-list">
+        <label class="pref-row">
+          <div>
+            <span class="pref-label">Show completed tasks</span>
+            <span class="pref-desc">Keep completed assignments visible in your task list.</span>
+          </div>
+          <input type="checkbox" id="pref-show-completed" role="switch">
+        </label>
+
+        <label class="pref-row">
+          <div>
+            <span class="pref-label">Auto-sync Canvas on load</span>
+            <span class="pref-desc">Fetch new assignments from Canvas each time you open the app.</span>
+          </div>
+          <input type="checkbox" id="pref-auto-sync" role="switch">
+        </label>
+      </div>
+    </section>
+
+    <!-- Danger zone -->
+    <section class="settings-card settings-card-danger">
+      <div class="settings-card-header">
+        <div class="settings-card-title">
+          <span class="settings-icon" aria-hidden="true">⚠️</span>
+          <div>
+            <h2>Data</h2>
+            <p>Manage your locally stored planner data.</p>
+          </div>
+        </div>
+      </div>
+      <button class="button button-danger" id="clear-data-btn">Clear All Tasks</button>
+      <p class="settings-note">This removes all manually entered tasks from this device. Canvas assignments can be re-synced. This cannot be undone.</p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="current-year"></span> Study Buddy Planner | WDD 231 Team Project</p>
+    <p id="last-modified"></p>
+  </footer>
+
+  <!-- Confirm clear dialog -->
+  <dialog id="confirm-clear-modal">
+    <div class="modal-content">
+      <button id="close-confirm-modal" aria-label="Cancel">X</button>
+      <h2>Clear all tasks?</h2>
+      <p>This will permanently delete all manually entered tasks on this device. Canvas assignments can be re-synced afterward.</p>
+      <div class="modal-actions">
+        <button class="button button-outline" id="cancel-clear-btn">Cancel</button>
+        <button class="button button-danger" id="confirm-clear-btn">Yes, clear everything</button>
+      </div>
+    </div>
+  </dialog>
+
+</body>
+</html>

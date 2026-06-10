@@ -1,6 +1,8 @@
 const STORAGE_KEY = "studybuddy_tasks";
 let tipsData = [];
 let lastTipIndex = -1;
+let incompleteShown = 9;
+let completedShown = 3;
 
 // --- Storage ---
 
@@ -104,15 +106,29 @@ function createTaskCardHTML(task) {
 }
 
 function renderTaskList() {
-  const taskList = document.querySelector("#task-list");
-  const tasks = loadTasks();
+  const tasks      = loadTasks();
+  const incomplete = tasks.filter((t) => !t.completed);
+  const completed  = tasks.filter((t) => t.completed);
 
-  if (tasks.length === 0) {
-    taskList.innerHTML = '<p class="empty-state">No assignments saved yet.</p>';
-    return;
+  const note             = document.querySelector("#task-section-note");
+  const incompleteList   = document.querySelector("#incomplete-list");
+  const completedSection = document.querySelector("#completed-section");
+  const completedList    = document.querySelector("#completed-list");
+  const showMoreInc      = document.querySelector("#show-more-incomplete");
+  const showMoreComp     = document.querySelector("#show-more-completed");
+
+  note.hidden = tasks.length > 0;
+
+  incompleteList.innerHTML = incomplete.slice(0, incompleteShown).map(createTaskCardHTML).join("");
+  showMoreInc.hidden = incomplete.length <= incompleteShown;
+
+  if (completed.length > 0) {
+    completedSection.hidden = false;
+    completedList.innerHTML = completed.slice(0, completedShown).map(createTaskCardHTML).join("");
+    showMoreComp.hidden = completed.length <= completedShown;
+  } else {
+    completedSection.hidden = true;
   }
-
-  taskList.innerHTML = tasks.map(createTaskCardHTML).join("");
 }
 
 // --- Task mutations ---
@@ -140,6 +156,10 @@ function openModal(taskId) {
   const task = loadTasks().find((t) => t.id === taskId);
   if (!task) return;
 
+  const canvasLink = task.canvasUrl
+    ? `<a href="${task.canvasUrl}" target="_blank" rel="noopener noreferrer">Open in Canvas</a>`
+    : null;
+
   document.querySelector("#modal-text").innerHTML = `
     <strong>Assignment:</strong> ${task.name}<br>
     <strong>Subject:</strong> ${task.subject}<br>
@@ -147,6 +167,7 @@ function openModal(taskId) {
     <strong>Priority:</strong> ${task.priority}<br>
     <strong>Status:</strong> ${task.completed ? "Complete" : "Incomplete"}<br>
     <strong>Notes:</strong> ${task.notes || "None"}
+    ${canvasLink ? `<br><strong>Canvas:</strong> ${canvasLink}` : ""}
   `;
   document.querySelector("#task-modal").showModal();
 }
@@ -217,8 +238,19 @@ function setFooterDates() {
 
 async function init() {
   document.querySelector("#assignment-form").addEventListener("submit", handleFormSubmit);
-  document.querySelector("#task-list").addEventListener("click", handleTaskListClick);
-  document.querySelector("#task-list").addEventListener("change", handleToggleComplete);
+
+  const assignmentSection = document.querySelector("#assignment-section");
+  assignmentSection.addEventListener("click", handleTaskListClick);
+  assignmentSection.addEventListener("change", handleToggleComplete);
+
+  document.querySelector("#show-more-incomplete").addEventListener("click", () => {
+    incompleteShown += 9;
+    renderTaskList();
+  });
+  document.querySelector("#show-more-completed").addEventListener("click", () => {
+    completedShown += 3;
+    renderTaskList();
+  });
   document.querySelector("#new-tip-button").addEventListener("click", handleNewTipClick);
   document.querySelector("#menu-button").addEventListener("click", handleMenuToggle);
   document.querySelector("#close-modal").addEventListener("click", closeModal);

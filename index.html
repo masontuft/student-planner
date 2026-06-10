@@ -26,7 +26,7 @@
           <li><a href="index.html" aria-current="page" class="active">Home</a></li>
           <li><a href="planner.html">Planner</a></li>
           <li><a href="tips.html">Study Tips</a></li>
-          <li><a href="#">Settings</a></li>
+          <li><a href="settings.html">Settings</a></li>
         </ul>
       </nav>
     </div>
@@ -124,10 +124,17 @@
       </form>
     </section>
 
-    <section class="task-section">
+    <section class="task-section" id="assignment-section">
       <h2>My Assignments</h2>
-      <p class="section-note">Saved assignments will appear below.</p>
-      <div id="task-list" class="task-list"></div>
+      <p class="section-note" id="task-section-note">Saved assignments will appear below.</p>
+      <div id="incomplete-list" class="task-list"></div>
+      <button id="show-more-incomplete" class="button button-outline show-more-btn" hidden>Show more</button>
+
+      <div id="completed-section" hidden>
+        <h3 class="completed-heading">Completed</h3>
+        <div id="completed-list" class="task-list task-list-completed"></div>
+        <button id="show-more-completed" class="button button-outline show-more-btn" hidden>Show more</button>
+      </div>
     </section>
 
     <section class="study-tip-section">
