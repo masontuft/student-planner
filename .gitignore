@@ -1,2 +1,5 @@
 .claude/
 .gstack/
+
+# Local Netlify folder
+.netlify

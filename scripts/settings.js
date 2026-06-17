@@ -1,7 +1,5 @@
-// Local proxy that fetches the Canvas ICS feed server-side,
-// bypassing the browser's CORS restriction.
-// Run: node proxy.js  (starts on http://localhost:3002)
-const CORS_PROXY = "http://localhost:3002/ics?url=";
+// Proxies Canvas ICS feeds server-side to bypass CORS. Run locally with `netlify dev`.
+const CORS_PROXY = "/.netlify/functions/ics?url=";
 
 const STORAGE_KEY_TASKS    = "studybuddy_tasks";
 const STORAGE_KEY_FEED_URL = "canvas_feed_url";
