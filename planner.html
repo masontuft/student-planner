@@ -4,48 +4,139 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Planner | Study Buddy Planner</title>
-  <meta name="description" content="A calendar-style planner page for organizing assignments and study tasks.">
+  <meta name="description" content="A weekly calendar planner for organizing assignments and study tasks by day.">
   <meta name="author" content="Team 2">
-
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/planner.css">
-
-<script src="scripts/main.js" defer></script>
-<script src="scripts/planner.js" defer></script>
-
+  <script src="scripts/planner.js" defer></script>
 </head>
-
 <body>
-  <header>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
     <div class="header-content">
-      <h1>Study Buddy Planner</h1>
-      <p>Plan smarter. Study better. Stay organized.</p>
+      <a class="logo" href="index.html" aria-label="Study Buddy Planner home">
+        <span class="logo-mark">SB</span>
+        <span>Study Buddy Planner</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <button id="menu-button" aria-label="Open navigation menu">☰</button>
+        <ul id="nav-menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="planner.html" aria-current="page" class="active">Planner</a></li>
+          <li><a href="tips.html">Study Tips</a></li>
+          <li><a href="settings.html">Settings</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
 
-  <nav>
-    <button id="menu-button" aria-label="Open navigation menu">☰</button>
-    <ul id="nav-menu">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="planner.html" class="active">Planner</a></li>
-      <li><a href="tips.html">Study Tips</a></li>
-    </ul>
-  </nav>
+  <main id="main-content">
 
-  <main class="planner-page">
     <section class="planner-hero">
-      <h2>Weekly Planner</h2>
-      <p>
-        Use this page to organize assignments, study sessions, and important
-        deadlines by day of the week.
-      </p>
+      <div class="planner-hero-text">
+        <h1>Weekly Planner</h1>
+        <p>See all your assignments at a glance, organized by due date.</p>
+      </div>
+      <div class="week-nav" aria-label="Week navigation">
+        <button class="week-nav-btn" id="prev-week" aria-label="Previous week">&#8592; Prev</button>
+        <div class="week-nav-center">
+          <span id="week-label" aria-live="polite"></span>
+          <button class="week-today-btn" id="today-btn">Today</button>
+        </div>
+        <button class="week-nav-btn" id="next-week" aria-label="Next week">Next &#8594;</button>
+      </div>
+    </section>
+
+    <section class="calendar-section" aria-label="Weekly calendar">
+      <div class="calendar-grid" id="calendar-grid">
+        <!-- Day columns rendered by planner.js -->
+      </div>
+    </section>
+
+    <section class="planner-form-section">
+      <h2>Add a Task</h2>
+      <form id="planner-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="planner-task-name">Task Name</label>
+            <input
+              type="text"
+              id="planner-task-name"
+              name="assignment-name"
+              placeholder="e.g. Chapter 7 Reading"
+              required
+              maxlength="100"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="planner-subject">Subject</label>
+            <select id="planner-subject" name="subject" required>
+              <option value="">Choose a subject</option>
+              <option value="Math">Math</option>
+              <option value="Science">Science</option>
+              <option value="English">English</option>
+              <option value="History">History</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="planner-due-date">Due Date</label>
+            <input
+              type="date"
+              id="planner-due-date"
+              name="due-date"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="planner-priority">Priority</label>
+            <select id="planner-priority" name="priority" required>
+              <option value="">Choose priority</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group form-group-full">
+          <label for="planner-notes">Notes <span class="optional-label">(optional)</span></label>
+          <textarea
+            id="planner-notes"
+            name="notes"
+            rows="2"
+            placeholder="Any extra details..."
+          ></textarea>
+        </div>
+
+        <p id="planner-form-error" class="form-error" aria-live="polite"></p>
+        <button type="submit" class="button">Add Task</button>
+      </form>
     </section>
 
   </main>
 
-  <footer>
-    <p>&copy; <span id="current-year"></span> Study Buddy Planner</p>
+  <footer class="site-footer">
+    <p>&copy; <span id="current-year"></span> Study Buddy Planner | WDD 231 Team Project</p>
     <p id="last-modified"></p>
   </footer>
+
+  <!-- Task detail modal -->
+  <dialog id="task-modal">
+    <div class="modal-content">
+      <button id="close-modal" aria-label="Close task details">&#10005;</button>
+      <h2>Task Details</h2>
+      <div id="modal-body"></div>
+    </div>
+  </dialog>
+
 </body>
 </html>
