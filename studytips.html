@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Tips | Study Buddy Planner</title>
+  <meta name="description" content="Study tips and strategies to help students stay organized and improve their study habits.">
+  <meta name="author" content="Team 2">
+
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/home.css">
+  <script src="scripts/main.js" defer></script>
+</head>
+
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-content">
+      <h1>Study Buddy Planner</h1>
+      <p>Plan smarter. Study better. Stay organized.</p>
+    </div>
+  </header>
+
+  <nav>
+    <button id="menu-button" aria-label="Open navigation menu">☰</button>
+    <ul id="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="planner.html">Planner</a></li>
+      <li><a href="studytips.html" class="active">Study Tips</a></li>
+    </ul>
+  </nav>
+
+  <main id="main-content">
+    <section class="tips-hero">
+      <h2>Study Tips</h2>
+      <p>
+        Use these tips to build better study habits, stay organized, and manage
+        your schoolwork more effectively.
+      </p>
+    </section>
+
+    <section class="tips-section">
+      <h2>Helpful Study Strategies</h2>
+
+      <div class="tips-grid">
+        <article class="study-tip-card">
+          <h3>Break Tasks Into Smaller Steps</h3>
+          <p>
+            Large assignments feel easier when you divide them into smaller,
+            manageable tasks.
+          </p>
+        </article>
+
+        <article class="study-tip-card">
+          <h3>Use a Weekly Plan</h3>
+          <p>
+            Plan your assignments and study sessions at the beginning of the
+            week so deadlines do not sneak up on you.
+          </p>
+        </article>
+
+        <article class="study-tip-card">
+          <h3>Study Before You Are Tired</h3>
+          <p>
+            Try to study when your mind is fresh instead of waiting until the
+            end of the day.
+          </p>
+        </article>
+
+        <article class="study-tip-card">
+          <h3>Review a Little Each Day</h3>
+          <p>
+            Short daily review sessions can help you remember information
+            better than cramming all at once.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="featured-tip-section">
+      <h2>Tip of the Day</h2>
+
+      <div id="study-tip-card" class="study-tip-card">
+        <p>
+          Start with the assignment that is due soonest or feels the hardest.
+          Getting it started can make the rest of your work feel easier.
+        </p>
+      </div>
+
+      <button id="new-tip-button" type="button">Show Another Tip</button>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="current-year"></span> Study Buddy Planner</p>
+    <p id="last-modified"></p>
+  </footer>
+</body>
+</html>
