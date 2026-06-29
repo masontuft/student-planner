@@ -17,19 +17,22 @@
 
   <header class="site-header">
     <div class="header-content">
-      <h1>Study Buddy Planner</h1>
-      <p>Plan smarter. Study better. Stay organized.</p>
+      <a class="logo" href="index.html" aria-label="Study Buddy Planner home">
+        <span class="logo-mark">SB</span>
+        <span>Study Buddy Planner</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <button id="menu-button" aria-label="Open navigation menu">☰</button>
+        <ul id="nav-menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="planner.html">Planner</a></li>
+          <li><a href="studytips.html" aria-current="page" class="active">Study Tips</a></li>
+          <li><a href="settings.html">Settings</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
-
-  <nav>
-    <button id="menu-button" aria-label="Open navigation menu">☰</button>
-    <ul id="nav-menu">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="planner.html">Planner</a></li>
-      <li><a href="studytips.html" class="active">Study Tips</a></li>
-    </ul>
-  </nav>
 
   <main id="main-content">
     <section class="tips-hero">
@@ -93,7 +96,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>&copy; <span id="current-year"></span> Study Buddy Planner</p>
+    <p>&copy; <span id="current-year"></span> Study Buddy Planner | WDD 231 Team Project</p>
     <p id="last-modified"></p>
   </footer>
 </body>

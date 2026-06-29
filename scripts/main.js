@@ -166,30 +166,48 @@ function handleNewTipClick() {
 // --- Init ---
 
 async function init() {
-  document.querySelector("#assignment-form").addEventListener("submit", handleFormSubmit);
-
+  const assignmentForm = document.querySelector("#assignment-form");
   const assignmentSection = document.querySelector("#assignment-section");
-  assignmentSection.addEventListener("click", handleTaskListClick);
-  assignmentSection.addEventListener("change", handleToggleComplete);
+  const newTipButton = document.querySelector("#new-tip-button");
+  const menuButton = document.querySelector("#menu-button");
+  const closeModalBtn = document.querySelector("#close-modal");
+  const taskModal = document.querySelector("#task-modal");
+  const showMoreIncomplete = document.querySelector("#show-more-incomplete");
+  const showMoreCompleted = document.querySelector("#show-more-completed");
 
-  document.querySelector("#show-more-incomplete").addEventListener("click", () => {
-    incompleteShown += 9;
-    renderTaskList();
-  });
-  document.querySelector("#show-more-completed").addEventListener("click", () => {
-    completedShown += 3;
-    renderTaskList();
-  });
-  document.querySelector("#new-tip-button").addEventListener("click", handleNewTipClick);
-  document.querySelector("#menu-button").addEventListener("click", handleMenuToggle);
-  document.querySelector("#close-modal").addEventListener("click", closeModal);
-  document.querySelector("#task-modal").addEventListener("click", (e) => {
-    if (e.target === e.currentTarget) closeModal();
-  });
+  if (assignmentForm) assignmentForm.addEventListener("submit", handleFormSubmit);
 
-  renderTaskList();
-  tipsData = await loadStudyTips();
-  displayRandomTip(tipsData);
+  if (assignmentSection) {
+    assignmentSection.addEventListener("click", handleTaskListClick);
+    assignmentSection.addEventListener("change", handleToggleComplete);
+  }
+
+  if (showMoreIncomplete) {
+    showMoreIncomplete.addEventListener("click", () => {
+      incompleteShown += 9;
+      renderTaskList();
+    });
+  }
+  if (showMoreCompleted) {
+    showMoreCompleted.addEventListener("click", () => {
+      completedShown += 3;
+      renderTaskList();
+    });
+  }
+  if (newTipButton) newTipButton.addEventListener("click", handleNewTipClick);
+  if (menuButton) menuButton.addEventListener("click", handleMenuToggle);
+  if (closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
+  if (taskModal) {
+    taskModal.addEventListener("click", (e) => {
+      if (e.target === e.currentTarget) closeModal();
+    });
+  }
+
+  if (assignmentSection) renderTaskList();
+  if (newTipButton) {
+    tipsData = await loadStudyTips();
+    displayRandomTip(tipsData);
+  }
   setFooterDates();
 }
 
