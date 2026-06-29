@@ -1,56 +1,9 @@
-const STORAGE_KEY = "studybuddy_tasks";
+import { STORAGE_KEY, loadTasks, saveTasks, createTask, validateForm, handleMenuToggle, setFooterDates } from "./utils.js";
+
 let tipsData = [];
 let lastTipIndex = -1;
 let incompleteShown = 9;
 let completedShown = 3;
-
-// --- Storage ---
-
-function loadTasks() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  } catch {
-    return [];
-  }
-}
-
-function saveTasks(tasks) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-}
-
-// --- Task factory ---
-
-function createTask(formData) {
-  return {
-    id: crypto.randomUUID(),
-    name: formData["assignment-name"],
-    subject: formData["subject"],
-    dueDate: formData["due-date"],
-    priority: formData["priority"],
-    notes: formData["notes"],
-    completed: false,
-    createdAt: new Date().toISOString(),
-  };
-}
-
-// --- Validation ---
-
-function validateForm(formData) {
-  const errors = [];
-
-  if (formData["assignment-name"].length > 100) {
-    errors.push("Assignment name must be 100 characters or fewer.");
-  }
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const due = new Date(formData["due-date"] + "T00:00:00");
-  if (due < today) {
-    errors.push("Due date cannot be in the past.");
-  }
-
-  return { valid: errors.length === 0, errors };
-}
 
 // --- Form handling ---
 
@@ -105,7 +58,7 @@ function createTaskCardHTML(task) {
   `;
 }
 
-function renderTaskList() {
+export function renderTaskList() {
   const tasks      = loadTasks();
   const incomplete = tasks.filter((t) => !t.completed);
   const completed  = tasks.filter((t) => t.completed);
@@ -208,30 +161,6 @@ function displayRandomTip(tips) {
 
 function handleNewTipClick() {
   displayRandomTip(tipsData);
-}
-
-// --- Navigation ---
-
-function handleMenuToggle() {
-  const nav = document.querySelector("#nav-menu");
-  const btn = document.querySelector("#menu-button");
-  const isOpen = nav.classList.toggle("nav-open");
-  btn.setAttribute("aria-expanded", isOpen);
-}
-
-// --- Footer ---
-
-function setFooterDates() {
-  const yearEl = document.querySelector("#current-year");
-  const modifiedEl = document.querySelector("#last-modified");
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
-  if (modifiedEl) {
-    modifiedEl.textContent = `Last updated: ${new Date(document.lastModified).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })}`;
-  }
 }
 
 // --- Init ---
