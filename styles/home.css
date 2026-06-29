@@ -334,6 +334,71 @@ h1 {
   border-color: #e74c3c;
 }
 
+/* --- Study tips page --- */
+.tips-hero {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+}
+
+.tips-hero h2 {
+  color: var(--color-primary-dark);
+  margin: 0 0 0.5rem;
+}
+
+.tips-hero p {
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.tips-section h2,
+.featured-tip-section h2 {
+  color: var(--color-primary-dark);
+  margin: 0 0 1rem;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.study-tip-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 1.5rem;
+}
+
+.study-tip-card h3 {
+  color: var(--color-primary-dark);
+  margin: 0 0 0.5rem;
+}
+
+.study-tip-card p {
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.featured-tip-section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 1.5rem 2rem;
+}
+
+@media (max-width: 640px) {
+  .tips-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* --- Study tip section --- */
 .study-tip-section {
   background: var(--color-surface);
