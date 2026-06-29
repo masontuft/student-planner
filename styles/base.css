@@ -71,3 +71,75 @@ main {
   border-top: 1px solid var(--color-border);
   background: white;
 }
+
+/* Animations */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes softPop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes buttonPulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.03);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Page animation */
+main section {
+  animation: fadeSlideIn 0.45s ease-in-out;
+}
+
+/* Card animation */
+article,
+.task-card,
+.planner-task,
+.study-tip-card,
+.calendar-day,
+.settings-card {
+  animation: softPop 0.35s ease-in-out;
+}
+
+/* Button animation */
+button:hover,
+.button:hover,
+a.button:hover {
+  animation: buttonPulse 0.3s ease-in-out;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
