@@ -1,7 +1,8 @@
 // Proxies Canvas ICS feeds server-side to bypass CORS. Run locally with `netlify dev`.
+import { STORAGE_KEY, handleMenuToggle, setFooterDates } from "./utils.js";
+
 const CORS_PROXY = "/.netlify/functions/ics?url=";
 
-const STORAGE_KEY_TASKS    = "studybuddy_tasks";
 const STORAGE_KEY_FEED_URL = "canvas_feed_url";
 const STORAGE_KEY_PREFS    = "studybuddy_prefs";
 
@@ -106,7 +107,7 @@ function parseSummary(summary) {
 
 // --- Sync ---
 
-async function syncAssignments() {
+export async function syncAssignments() {
   const syncBtn      = document.querySelector("#canvas-sync-btn");
   const coursesNote  = document.querySelector("#canvas-courses-note");
   const courseList   = document.querySelector("#canvas-course-list");
@@ -160,8 +161,8 @@ async function syncAssignments() {
   }
 }
 
-function mergeCanvasAssignments(events) {
-  const existing  = JSON.parse(localStorage.getItem(STORAGE_KEY_TASKS) || "[]");
+export function mergeCanvasAssignments(events) {
+  const existing  = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
   const canvasIds = new Set(existing.filter((t) => t.canvasId).map((t) => t.canvasId));
 
   const newTasks = events
@@ -184,7 +185,7 @@ function mergeCanvasAssignments(events) {
       };
     });
 
-  localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify([...existing, ...newTasks]));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([...existing, ...newTasks]));
 }
 
 function renderAssignmentPreview(events) {
@@ -331,33 +332,11 @@ function initClearData() {
   });
 
   confirmBtn.addEventListener("click", () => {
-    localStorage.removeItem(STORAGE_KEY_TASKS);
+    localStorage.removeItem(STORAGE_KEY);
     confirmModal.close();
     confirmBtn.textContent = "Cleared";
     setTimeout(() => { confirmBtn.textContent = "Yes, clear everything"; }, 2000);
   });
-}
-
-// --- Footer ---
-
-function setFooterDates() {
-  const yearEl     = document.querySelector("#current-year");
-  const modifiedEl = document.querySelector("#last-modified");
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
-  if (modifiedEl) {
-    modifiedEl.textContent = `Last updated: ${new Date(document.lastModified).toLocaleDateString("en-US", {
-      year: "numeric", month: "long", day: "numeric",
-    })}`;
-  }
-}
-
-// --- Mobile nav ---
-
-function handleMenuToggle() {
-  const nav    = document.querySelector("#nav-menu");
-  const btn    = document.querySelector("#menu-button");
-  const isOpen = nav.classList.toggle("nav-open");
-  btn.setAttribute("aria-expanded", isOpen);
 }
 
 // --- Init ---
