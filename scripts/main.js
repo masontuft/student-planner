@@ -52,6 +52,7 @@ function createTaskCardHTML(task) {
           <input type="checkbox" class="task-complete-checkbox" ${checked} aria-label="Mark as complete">
           Complete
         </label>
+        <a href="task-details.html?id=${task.id}" class="task-details-link">View Details</a>
         <button class="task-delete-btn" aria-label="Delete task">Delete</button>
       </div>
     </article>
@@ -134,7 +135,11 @@ function handleTaskListClick(event) {
     handleDeleteTask(event);
     return;
   }
+
   if (event.target.closest(".task-complete-checkbox")) return;
+
+  if (event.target.closest(".task-details-link")) return;
+
   const card = event.target.closest(".task-card");
   if (card) openModal(card.dataset.id);
 }
