@@ -5,6 +5,25 @@ let lastTipIndex = -1;
 let incompleteShown = 9;
 let completedShown = 3;
 
+// --- Toast notifications ---
+
+function showToast(message, type = "success") {
+  const toast = document.querySelector("#toast");
+
+  if (!toast) return;
+
+  toast.textContent = message;
+  toast.className = "toast show";
+
+  if (type === "error") {
+    toast.classList.add("error");
+  }
+
+  setTimeout(() => {
+    toast.className = "toast";
+  }, 3000);
+}
+
 // --- Form handling ---
 
 function handleFormSubmit(event) {
@@ -16,6 +35,7 @@ function handleFormSubmit(event) {
   const { valid, errors } = validateForm(formData);
   if (!valid) {
     errorEl.textContent = errors.join(" ");
+    showToast("Please fix the form errors before saving.", "error");
     return;
   }
 
@@ -25,6 +45,7 @@ function handleFormSubmit(event) {
   saveTasks(tasks);
   renderTaskList();
   form.reset();
+  showToast("Task saved successfully!");
 }
 
 // --- Rendering ---
