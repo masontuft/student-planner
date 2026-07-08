@@ -4,6 +4,7 @@ let tipsData = [];
 let lastTipIndex = -1;
 let incompleteShown = 9;
 let completedShown = 3;
+let taskIdToDelete = null;
 
 // --- Toast notifications ---
 
@@ -119,11 +120,37 @@ function handleToggleComplete(event) {
   renderTaskList();
 }
 
+// --- Delete task ---
+
 function handleDeleteTask(event) {
-  const id = event.target.closest("[data-id]").dataset.id;
-  saveTasks(loadTasks().filter((t) => t.id !== id));
-  renderTaskList();
+  const card = event.target.closest("[data-id]");
+  taskIdToDelete = card.dataset.id;
+
+  const deleteModal = document.querySelector("#delete-modal");
+  if (deleteModal) deleteModal.showModal();
 }
+
+function confirmDeleteTask() {
+  if (!taskIdToDelete) return;
+
+  saveTasks(loadTasks().filter((task) => task.id !== taskIdToDelete));
+  renderTaskList();
+
+  taskIdToDelete = null;
+
+  const deleteModal = document.querySelector("#delete-modal");
+  if (deleteModal) deleteModal.close();
+
+  showToast("Assignment deleted.");
+}
+
+function cancelDeleteTask() {
+  taskIdToDelete = null;
+
+  const deleteModal = document.querySelector("#delete-modal");
+  if (deleteModal) deleteModal.close();
+}
+
 
 // --- Modal ---
 
@@ -200,6 +227,9 @@ async function init() {
   const taskModal = document.querySelector("#task-modal");
   const showMoreIncomplete = document.querySelector("#show-more-incomplete");
   const showMoreCompleted = document.querySelector("#show-more-completed");
+  const confirmDeleteBtn = document.querySelector("#confirm-delete");
+  const cancelDeleteBtn = document.querySelector("#cancel-delete");
+  const deleteModal = document.querySelector("#delete-modal");
 
   if (assignmentForm) assignmentForm.addEventListener("submit", handleFormSubmit);
 
@@ -214,26 +244,40 @@ async function init() {
       renderTaskList();
     });
   }
+
   if (showMoreCompleted) {
     showMoreCompleted.addEventListener("click", () => {
       completedShown += 3;
       renderTaskList();
     });
   }
+
   if (newTipButton) newTipButton.addEventListener("click", handleNewTipClick);
   if (menuButton) menuButton.addEventListener("click", handleMenuToggle);
   if (closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
+
   if (taskModal) {
     taskModal.addEventListener("click", (e) => {
       if (e.target === e.currentTarget) closeModal();
     });
   }
 
+  if (confirmDeleteBtn) confirmDeleteBtn.addEventListener("click", confirmDeleteTask);
+  if (cancelDeleteBtn) cancelDeleteBtn.addEventListener("click", cancelDeleteTask);
+
+  if (deleteModal) {
+    deleteModal.addEventListener("click", (event) => {
+      if (event.target === event.currentTarget) cancelDeleteTask();
+    });
+  }
+
   if (assignmentSection) renderTaskList();
+
   if (newTipButton) {
     tipsData = await loadStudyTips();
     displayRandomTip(tipsData);
   }
+
   setFooterDates();
 }
 
