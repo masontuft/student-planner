@@ -1,5 +1,25 @@
 /* planner.css — styles for planner.html */
 
+/* ── Logo ── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-weight: 800;
+  text-decoration: none;
+  color: var(--color-primary-dark);
+}
+
+.logo-mark {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 0.9rem;
+  background: var(--color-primary);
+  color: white;
+}
+
 /* ── Hero ── */
 .planner-hero {
   background: var(--color-surface);
