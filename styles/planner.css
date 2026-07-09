@@ -1,80 +1,5 @@
 /* planner.css — styles for planner.html */
 
-/* ── Logo & Nav (shared with home.css pattern) ── */
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  font-weight: 800;
-  text-decoration: none;
-  color: var(--color-primary-dark);
-}
-
-.logo-mark {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 0.9rem;
-  background: var(--color-primary);
-  color: white;
-}
-
-.main-nav {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.main-nav a {
-  text-decoration: none;
-  color: var(--color-muted);
-  font-weight: 700;
-  padding: 0.65rem 0.85rem;
-  border-radius: 999px;
-}
-
-.main-nav a:hover,
-.main-nav a:focus,
-.main-nav a[aria-current="page"],
-.main-nav a.active {
-  color: var(--color-primary-dark);
-  background: #eef3ff;
-}
-
-#menu-button {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--color-primary-dark);
-  padding: 0.25rem 0.5rem;
-}
-
-#nav-menu {
-  display: flex;
-  gap: 0.5rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-#nav-menu li a {
-  text-decoration: none;
-  color: var(--color-muted);
-  font-weight: 700;
-  padding: 0.65rem 0.85rem;
-  border-radius: 999px;
-  display: block;
-}
-
-#nav-menu li a:hover,
-#nav-menu li a:focus,
-#nav-menu li a.active {
-  color: var(--color-primary-dark);
-  background: #eef3ff;
-}
-
 /* ── Hero ── */
 .planner-hero {
   background: var(--color-surface);
@@ -213,11 +138,17 @@
 /* Today highlight */
 .calendar-day.is-today {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(38, 61, 115, 0.15), 0 8px 22px rgba(28, 42, 70, 0.1);
+  box-shadow:
+    0 0 0 2px rgba(38, 61, 115, 0.15),
+    0 8px 22px rgba(28, 42, 70, 0.1);
 }
 
 .calendar-day.is-today .calendar-day-header {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
   border-bottom-color: transparent;
 }
 
@@ -304,9 +235,17 @@
   margin-top: 0.25rem;
 }
 
-.day-task-pill[data-priority="High"]   .pill-dot { background: #c0392b; }
-.day-task-pill[data-priority="Medium"] .pill-dot { background: #b07a00; }
-.day-task-pill[data-priority="Low"]    .pill-dot { background: #1e8449; }
+.day-task-pill[data-priority="High"] .pill-dot {
+  background: #c0392b;
+}
+
+.day-task-pill[data-priority="Medium"] .pill-dot {
+  background: #b07a00;
+}
+
+.day-task-pill[data-priority="Low"] .pill-dot {
+  background: #1e8449;
+}
 
 .pill-name {
   font-weight: 700;
@@ -463,9 +402,20 @@
   margin-left: 0.4rem;
 }
 
-#modal-body .badge-High   { background: #fdecea; color: #c0392b; }
-#modal-body .badge-Medium { background: #fef9ec; color: #b07a00; }
-#modal-body .badge-Low    { background: #eafaf1; color: #1e8449; }
+#modal-body .badge-High {
+  background: #fdecea;
+  color: #c0392b;
+}
+
+#modal-body .badge-Medium {
+  background: #fef9ec;
+  color: #b07a00;
+}
+
+#modal-body .badge-Low {
+  background: #eafaf1;
+  color: #1e8449;
+}
 
 .modal-actions {
   display: flex;
@@ -552,30 +502,5 @@
 
   .form-row {
     grid-template-columns: 1fr;
-  }
-
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .main-nav {
-    width: 100%;
-  }
-
-  #menu-button {
-    display: block;
-  }
-
-  #nav-menu {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    padding: 0.5rem 0;
-  }
-
-  #nav-menu.nav-open {
-    display: flex;
   }
 }
