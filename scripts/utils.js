@@ -55,10 +55,20 @@ export function validateForm(formData) {
 // --- Navigation ---
 
 export function handleMenuToggle() {
-  const nav = document.querySelector("#nav-menu");
-  const btn = document.querySelector("#menu-button");
-  const isOpen = nav.classList.toggle("nav-open");
-  btn.setAttribute("aria-expanded", String(isOpen));
+  const menuButton = document.querySelector("#menu-button");
+  const navMenu = document.querySelector("#nav-menu");
+
+  if (!menuButton || !navMenu) return;
+
+  const isOpen = navMenu.classList.toggle("open");
+
+  menuButton.setAttribute("aria-expanded", isOpen);
+
+  if (isOpen) {
+    menuButton.setAttribute("aria-label", "Close navigation menu");
+  } else {
+    menuButton.setAttribute("aria-label", "Open navigation menu");
+  }
 }
 
 // --- Footer ---

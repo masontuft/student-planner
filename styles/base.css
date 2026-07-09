@@ -185,3 +185,89 @@ a.button:hover {
     max-width: none;
   }
 }
+
+/* Burger menu */
+.main-nav {
+  position: relative;
+}
+
+.menu-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-primary-dark);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.nav-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 190px;
+  margin: 0;
+  padding: 0.5rem;
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  z-index: 1000;
+}
+
+@keyframes menuDropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nav-menu.open {
+  display: block;
+  animation: menuDropIn 0.3s ease-out;
+}
+
+.nav-menu li {
+  margin: 0;
+}
+
+.nav-menu a {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+}
+
+.nav-menu a:hover,
+.nav-menu a:focus-visible {
+  background: #edf2fc;
+}
+
+.nav-menu a.active {
+  background: #e8eefb;
+  color: var(--color-primary-dark);
+  font-weight: 700;
+}
+
+/* Gear icon */
+.settings-link {
+  justify-content: center;
+}
+
+.gear-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}

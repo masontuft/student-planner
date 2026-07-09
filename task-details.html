@@ -24,14 +24,29 @@
     </div>
   </header>
 
-  <nav>
-    <ul id="nav-menu">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="planner.html">Planner</a></li>
-      <li><a href="studytips.html">Study Tips</a></li>
-      <li><a href="settings.html">Settings</a></li>
-    </ul>
-  </nav>
+  <nav class="main-nav" aria-label="Main navigation">
+  <button
+    id="menu-button"
+    class="menu-button"
+    aria-label="Open navigation menu"
+    aria-expanded="false"
+    aria-controls="nav-menu"
+  >
+    ☰
+  </button>
+
+  <ul id="nav-menu" class="nav-menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="planner.html">Planner</a></li>
+    <li><a href="studytips.html">Study Tips</a></li>
+
+    <li>
+      <a href="settings.html" class="settings-link" aria-label="Settings">
+        <span class="gear-icon" aria-hidden="true">⚙</span>
+      </a>
+    </li>
+  </ul>
+</nav>
 
   <main id="main-content">
     <section class="task-details-section">

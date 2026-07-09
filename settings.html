@@ -24,12 +24,54 @@
     </a>
 
     <nav class="main-nav" aria-label="Main navigation">
-      <button id="menu-button" aria-label="Open navigation menu">☰</button>
-      <ul id="nav-menu">
+  <button
+    id="menu-button"
+    class="menu-button"
+    aria-label="Open navigation menu"
+    aria-expanded="false"
+    aria-controls="nav-menu"
+  >
+    ☰
+  </button>
+
+  <header class="site-header">
+  <div class="header-content">
+    <a class="logo" href="index.html" aria-label="Study Buddy Planner home">
+      <img
+        class="logo-mark"
+        src="images/notebook-logo.svg"
+        alt=""
+        aria-hidden="true"
+      >
+      <span>Study Buddy Planner</span>
+    </a>
+
+    <nav class="main-nav" aria-label="Main navigation">
+      <button
+        id="menu-button"
+        class="menu-button"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+      >
+        ☰
+      </button>
+
+      <ul id="nav-menu" class="nav-menu">
         <li><a href="index.html">Home</a></li>
         <li><a href="planner.html">Planner</a></li>
         <li><a href="studytips.html">Study Tips</a></li>
-        <li><a href="settings.html">Settings</a></li>
+
+        <li>
+          <a
+            href="settings.html"
+            class="settings-link active"
+            aria-label="Settings"
+            aria-current="page"
+          >
+            <span class="gear-icon" aria-hidden="true">⚙</span>
+          </a>
+        </li>
       </ul>
     </nav>
   </div>
