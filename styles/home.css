@@ -17,26 +17,7 @@
   color: white;
 }
 
-.main-nav {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.main-nav a {
-  text-decoration: none;
-  color: var(--color-muted);
-  font-weight: 700;
-  padding: 0.65rem 0.85rem;
-  border-radius: 999px;
-}
-
-.main-nav a:hover,
-.main-nav a:focus,
-.main-nav a[aria-current="page"] {
-  color: var(--color-primary-dark);
-  background: #eef3ff;
-}
-
+/* --- Hero section --- */
 .hero-section {
   display: grid;
   grid-template-columns: 1fr 260px;
@@ -48,7 +29,6 @@
   padding: 2rem;
   margin-bottom: 1.5rem;
 }
-
 
 h1 {
   font-size: clamp(2rem, 5vw, 3.5rem);
@@ -64,7 +44,11 @@ h1 {
 
 .date-card {
   border-radius: var(--radius-lg);
-  background: linear-gradient(145deg, var(--color-primary), var(--color-primary-dark));
+  background: linear-gradient(
+    145deg,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
   color: white;
   padding: 1.5rem;
 }
@@ -74,6 +58,7 @@ h1 {
   font-size: 2rem;
 }
 
+/* --- Summary cards --- */
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -127,7 +112,6 @@ h1 {
 .button:focus {
   background: var(--color-primary-dark);
 }
-
 
 /* --- Form section --- */
 .planner-section {
@@ -280,9 +264,21 @@ h1 {
   color: var(--color-primary);
 }
 
-.task-card[data-priority="High"]   .task-priority-badge { background: #fdecea; color: #c0392b; font-weight: 800; }
-.task-card[data-priority="Medium"] .task-priority-badge { background: #fef9ec; color: #b07a00; }
-.task-card[data-priority="Low"]    .task-priority-badge { background: #eafaf1; color: #1e8449; }
+.task-card[data-priority="High"] .task-priority-badge {
+  background: #fdecea;
+  color: #c0392b;
+  font-weight: 800;
+}
+
+.task-card[data-priority="Medium"] .task-priority-badge {
+  background: #fef9ec;
+  color: #b07a00;
+}
+
+.task-card[data-priority="Low"] .task-priority-badge {
+  background: #eafaf1;
+  color: #1e8449;
+}
 
 .task-subject {
   font-size: 0.85rem;
@@ -393,12 +389,6 @@ h1 {
   padding: 1.5rem 2rem;
 }
 
-@media (max-width: 640px) {
-  .tips-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* --- Study tip section --- */
 .study-tip-section {
   background: var(--color-surface);
@@ -491,19 +481,8 @@ h1 {
   background: #dce7ff;
 }
 
-
 /* --- Responsive --- */
 @media (max-width: 760px) {
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .main-nav {
-    width: 100%;
-  }
-
   .hero-section {
     grid-template-columns: 1fr;
   }
@@ -517,6 +496,12 @@ h1 {
   }
 
   .task-list-completed {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .tips-grid {
     grid-template-columns: 1fr;
   }
 }
