@@ -70,7 +70,7 @@
 }
 
 .settings-error {
-  color: #c0392b;
+  color: #a5291b;
   font-size: 0.9rem;
   margin: 0 0 1rem;
 }
@@ -94,12 +94,12 @@
 
 .connection-badge[data-status="connected"] {
   background: #eafaf1;
-  color: #1e8449;
+  color: #166a39;
 }
 
 .connection-badge[data-status="connecting"] {
   background: #fef9ec;
-  color: #b07a00;
+  color: #8a5d00;
 }
 
 /* --- Canvas connected account row --- */

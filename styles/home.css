@@ -180,7 +180,7 @@ h1 {
 }
 
 .form-error {
-  color: #c0392b;
+  color: #a5291b;
   font-size: 0.9rem;
   min-height: 1.2em;
   margin: 0;
@@ -266,18 +266,18 @@ h1 {
 
 .task-card[data-priority="High"] .task-priority-badge {
   background: #fdecea;
-  color: #c0392b;
+  color: #a5291b;
   font-weight: 800;
 }
 
 .task-card[data-priority="Medium"] .task-priority-badge {
   background: #fef9ec;
-  color: #b07a00;
+  color: #8a5d00;
 }
 
 .task-card[data-priority="Low"] .task-priority-badge {
   background: #eafaf1;
-  color: #1e8449;
+  color: #166a39;
 }
 
 .task-subject {
@@ -326,7 +326,7 @@ h1 {
 
 .task-delete-btn:hover {
   background: #fdecea;
-  color: #c0392b;
+  color: #a5291b;
   border-color: #e74c3c;
 }
 
