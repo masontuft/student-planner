@@ -70,7 +70,7 @@ function handleFormSubmit(event) {
 function createTaskCardHTML(task) {
   const checked = task.completed ? "checked" : "";
   return `
-    <article class="task-card" data-id="${escapeHTML(task.id)}" data-priority="${escapeHTML(task.priority)}">
+    <article class="task-card" data-id="${escapeHTML(task.id)}" data-priority="${escapeHTML(task.priority)}" role="button" tabindex="0" aria-label="${escapeHTML(`${task.name}, ${task.subject}, ${task.priority} priority${task.completed ? ", completed" : ""}`)}">
       <div class="task-card-header">
         <span class="task-priority-badge">${escapeHTML(task.priority)}</span>
         <span class="task-subject">${escapeHTML(task.subject)}</span>
@@ -225,6 +225,17 @@ function handleTaskListClick(event) {
   if (card) openModal(card.dataset.id);
 }
 
+function handleTaskListKeydown(event) {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  if (event.target.closest(".task-complete-checkbox, .task-details-link, .task-delete-btn")) return;
+
+  const card = event.target.closest(".task-card");
+  if (!card) return;
+
+  event.preventDefault();
+  openModal(card.dataset.id);
+}
+
 // --- Study tips ---
 
 async function loadStudyTips() {
@@ -286,6 +297,7 @@ async function init() {
 
   if (assignmentSection) {
     assignmentSection.addEventListener("click", handleTaskListClick);
+    assignmentSection.addEventListener("keydown", handleTaskListKeydown);
     assignmentSection.addEventListener("change", handleToggleComplete);
   }
 

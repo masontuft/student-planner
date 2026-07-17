@@ -47,7 +47,7 @@ export function savePrefs(prefs) {
 export function createTask(formData) {
   return {
     id: crypto.randomUUID(),
-    name: formData["assignment-name"],
+    name: formData["assignment-name"].trim(),
     subject: formData["subject"],
     dueDate: formData["due-date"],
     priority: formData["priority"],
@@ -91,7 +91,10 @@ export function formatDate(dueDateStr, options = { year: "numeric", month: "shor
 export function validateForm(formData) {
   const errors = [];
 
-  if (formData["assignment-name"].length > 100) {
+  const name = formData["assignment-name"].trim();
+  if (!name) {
+    errors.push("Assignment name is required.");
+  } else if (name.length > 100) {
     errors.push("Assignment name must be 100 characters or fewer.");
   }
 

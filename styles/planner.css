@@ -198,7 +198,7 @@
 
 .day-empty {
   font-size: 0.78rem;
-  color: var(--color-border);
+  color: var(--color-muted);
   font-style: italic;
   text-align: center;
   margin: auto;
