@@ -1,4 +1,17 @@
-import { STORAGE_KEY, loadTasks, saveTasks, createTask, validateForm, handleMenuToggle, setFooterDates } from "./utils.js";
+import {
+  loadTasks,
+  saveTasks,
+  createTask,
+  validateForm,
+  handleMenuToggle,
+  setFooterDates,
+  escapeHTML,
+  formatDate,
+  toDateStr,
+  getTodayStr,
+  loadPrefs,
+} from "./utils.js";
+import { getFeedUrl, syncCanvasTasks } from "./canvas-sync.js";
 
 let tipsData = [];
 let lastTipIndex = -1;
@@ -43,7 +56,10 @@ function handleFormSubmit(event) {
   errorEl.textContent = "";
   const tasks = loadTasks();
   tasks.push(createTask(formData));
-  saveTasks(tasks);
+  if (!saveTasks(tasks)) {
+    showToast("Could not save the task — storage may be full or blocked.", "error");
+    return;
+  }
   renderTaskList();
   form.reset();
   showToast("Task saved successfully!");
@@ -51,34 +67,43 @@ function handleFormSubmit(event) {
 
 // --- Rendering ---
 
-function formatDate(dueDateStr) {
-  return new Date(dueDateStr + "T00:00:00").toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
 function createTaskCardHTML(task) {
   const checked = task.completed ? "checked" : "";
   return `
-    <article class="task-card" data-id="${task.id}" data-priority="${task.priority}">
+    <article class="task-card" data-id="${escapeHTML(task.id)}" data-priority="${escapeHTML(task.priority)}">
       <div class="task-card-header">
-        <span class="task-priority-badge">${task.priority}</span>
-        <span class="task-subject">${task.subject}</span>
+        <span class="task-priority-badge">${escapeHTML(task.priority)}</span>
+        <span class="task-subject">${escapeHTML(task.subject)}</span>
       </div>
-      <h3 class="task-name">${task.name}</h3>
+      <h3 class="task-name">${escapeHTML(task.name)}</h3>
       <p class="task-due">Due: ${formatDate(task.dueDate)}</p>
       <div class="task-card-footer">
         <label class="task-complete-label">
           <input type="checkbox" class="task-complete-checkbox" ${checked} aria-label="Mark as complete">
           Complete
         </label>
-        <a href="task-details.html?id=${task.id}" class="task-details-link">View Details</a>
+        <a href="task-details.html?id=${encodeURIComponent(task.id)}" class="task-details-link">View Details</a>
         <button class="task-delete-btn" aria-label="Delete task">Delete</button>
       </div>
     </article>
   `;
+}
+
+function updateSummaryCards(tasks) {
+  const openEl      = document.querySelector("#summary-open");
+  const dueWeekEl   = document.querySelector("#summary-due-week");
+  const completedEl = document.querySelector("#summary-completed");
+  if (!openEl || !dueWeekEl || !completedEl) return;
+
+  const incomplete = tasks.filter((t) => !t.completed);
+  const todayStr = getTodayStr();
+  const weekEnd = new Date();
+  weekEnd.setDate(weekEnd.getDate() + 6);
+  const weekEndStr = toDateStr(weekEnd);
+
+  openEl.textContent      = incomplete.length;
+  dueWeekEl.textContent   = incomplete.filter((t) => t.dueDate >= todayStr && t.dueDate <= weekEndStr).length;
+  completedEl.textContent = tasks.length - incomplete.length;
 }
 
 export function renderTaskList() {
@@ -93,12 +118,16 @@ export function renderTaskList() {
   const showMoreInc      = document.querySelector("#show-more-incomplete");
   const showMoreComp     = document.querySelector("#show-more-completed");
 
+  updateSummaryCards(tasks);
+
   note.hidden = tasks.length > 0;
 
   incompleteList.innerHTML = incomplete.slice(0, incompleteShown).map(createTaskCardHTML).join("");
   showMoreInc.hidden = incomplete.length <= incompleteShown;
 
-  if (completed.length > 0) {
+  const showCompleted = loadPrefs().showCompleted ?? true;
+
+  if (completed.length > 0 && showCompleted) {
     completedSection.hidden = false;
     completedList.innerHTML = completed.slice(0, completedShown).map(createTaskCardHTML).join("");
     showMoreComp.hidden = completed.length <= completedShown;
@@ -116,7 +145,9 @@ function handleToggleComplete(event) {
   const tasks = loadTasks().map((t) =>
     t.id === id ? { ...t, completed: event.target.checked } : t
   );
-  saveTasks(tasks);
+  if (!saveTasks(tasks)) {
+    showToast("Could not update the task — storage may be full or blocked.", "error");
+  }
   renderTaskList();
 }
 
@@ -133,15 +164,17 @@ function handleDeleteTask(event) {
 function confirmDeleteTask() {
   if (!taskIdToDelete) return;
 
-  saveTasks(loadTasks().filter((task) => task.id !== taskIdToDelete));
+  if (!saveTasks(loadTasks().filter((task) => task.id !== taskIdToDelete))) {
+    showToast("Could not delete the task — storage may be full or blocked.", "error");
+  } else {
+    showToast("Assignment deleted.");
+  }
   renderTaskList();
 
   taskIdToDelete = null;
 
   const deleteModal = document.querySelector("#delete-modal");
   if (deleteModal) deleteModal.close();
-
-  showToast("Assignment deleted.");
 }
 
 function cancelDeleteTask() {
@@ -159,16 +192,16 @@ function openModal(taskId) {
   if (!task) return;
 
   const canvasLink = task.canvasUrl
-    ? `<a href="${task.canvasUrl}" target="_blank" rel="noopener noreferrer">Open in Canvas</a>`
+    ? `<a href="${escapeHTML(task.canvasUrl)}" target="_blank" rel="noopener noreferrer">Open in Canvas</a>`
     : null;
 
   document.querySelector("#modal-text").innerHTML = `
-    <strong>Assignment:</strong> ${task.name}<br>
-    <strong>Subject:</strong> ${task.subject}<br>
+    <strong>Assignment:</strong> ${escapeHTML(task.name)}<br>
+    <strong>Subject:</strong> ${escapeHTML(task.subject)}<br>
     <strong>Due:</strong> ${formatDate(task.dueDate)}<br>
-    <strong>Priority:</strong> ${task.priority}<br>
+    <strong>Priority:</strong> ${escapeHTML(task.priority)}<br>
     <strong>Status:</strong> ${task.completed ? "Complete" : "Incomplete"}<br>
-    <strong>Notes:</strong> ${task.notes || "None"}
+    <strong>Notes:</strong> ${escapeHTML(task.notes) || "None"}
     ${canvasLink ? `<br><strong>Canvas:</strong> ${canvasLink}` : ""}
   `;
   document.querySelector("#task-modal").showModal();
@@ -209,11 +242,26 @@ function displayRandomTip(tips) {
     index = Math.floor(Math.random() * tips.length);
   } while (tips.length > 1 && index === lastTipIndex);
   lastTipIndex = index;
-  document.querySelector("#study-tip-card").innerHTML = `<p>${tips[index].tip}</p>`;
+  document.querySelector("#study-tip-card").innerHTML = `<p>${escapeHTML(tips[index].tip)}</p>`;
 }
 
 function handleNewTipClick() {
   displayRandomTip(tipsData);
+}
+
+// --- Canvas auto-sync ---
+
+async function maybeAutoSyncCanvas() {
+  if (!(loadPrefs().autoSync && getFeedUrl())) return;
+  try {
+    const { added, updated } = await syncCanvasTasks();
+    if ((added || updated) && document.querySelector("#assignment-section")) {
+      renderTaskList();
+      showToast(`Canvas sync: ${added} new, ${updated} updated.`);
+    }
+  } catch {
+    // Sync errors are surfaced on the Settings page; keep page load quiet.
+  }
 }
 
 // --- Init ---
@@ -230,6 +278,9 @@ async function init() {
   const confirmDeleteBtn = document.querySelector("#confirm-delete");
   const cancelDeleteBtn = document.querySelector("#cancel-delete");
   const deleteModal = document.querySelector("#delete-modal");
+  const dueDateInput = document.querySelector("#due-date");
+
+  if (dueDateInput) dueDateInput.min = getTodayStr();
 
   if (assignmentForm) assignmentForm.addEventListener("submit", handleFormSubmit);
 
@@ -273,12 +324,13 @@ async function init() {
 
   if (assignmentSection) renderTaskList();
 
+  setFooterDates();
+  maybeAutoSyncCanvas();
+
   if (newTipButton) {
     tipsData = await loadStudyTips();
     displayRandomTip(tipsData);
   }
-
-  setFooterDates();
 }
 
 document.addEventListener("DOMContentLoaded", init);

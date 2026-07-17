@@ -4,27 +4,17 @@ A student assignment tracker with Canvas LMS integration for BYUI's WDD 231 team
 
 ## Development Setup
 
-The app is a static site served by VS Code Live Server. Canvas calendar sync requires a local proxy to work around Canvas's missing CORS headers.
+The app is a static site plus one Netlify serverless function (`netlify/functions/ics.js`) that proxies Canvas calendar feeds to work around Canvas's missing CORS headers.
 
-### 1. Start the proxy server
+### Run the app locally
 
-In a terminal, run:
+Install the [Netlify CLI](https://docs.netlify.com/cli/get-started/) if you don't have it, then from the project root run:
 
 ```bash
-node proxy.js
+netlify dev
 ```
 
-You should see:
-
-```
-Canvas ICS proxy → http://localhost:3002/ics?url=<feed-url>
-```
-
-Keep this terminal running while you use the app.
-
-### 2. Open the app
-
-Open `index.html` with VS Code Live Server (right-click → **Open with Live Server**). The app will be served at `http://localhost:5500`.
+The app will be served at `http://localhost:8888` with the ICS proxy available at `/.netlify/functions/ics`. Both the static pages and Canvas sync work from this single command — no separate proxy process is needed.
 
 ### Canvas Feed Setup
 
@@ -33,4 +23,14 @@ Open `index.html` with VS Code Live Server (right-click → **Open with Live Ser
 3. In the app, go to **Settings** and paste the URL under **Canvas LMS**
 4. Click **Connect** — the proxy will fetch and validate the feed
 
-> The proxy only accepts Canvas calendar feed URLs (`/feeds/calendars/…`) and is intended for local development only. For production, replace it with a Cloudflare Worker or serverless function.
+> The proxy only accepts `https` Canvas calendar feed URLs on `*.instructure.com` (path `/feeds/calendars/…`). Requests to any other host are rejected to prevent the function being used as an open proxy.
+
+## Project Structure
+
+- `index.html` / `planner.html` / `studytips.html` / `settings.html` / `task-details.html` — pages
+- `scripts/utils.js` — shared storage, validation, escaping, date, and nav helpers
+- `scripts/canvas-sync.js` — Canvas ICS fetching, parsing, and merge logic (DOM-free)
+- `scripts/main.js`, `scripts/planner.js`, `scripts/settings.js`, `scripts/task-details.js` — per-page code
+- `netlify/functions/ics.js` — Canvas feed proxy
+- `data/studyTips.json` — study tip data
+- `docs/` — archived project proposal documents

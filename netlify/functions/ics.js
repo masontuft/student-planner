@@ -12,11 +12,11 @@ export async function handler(event) {
 
   const targetUrl = event.queryStringParameters?.url;
 
-  if (!targetUrl || !targetUrl.includes("/feeds/calendars/")) {
+  if (!targetUrl) {
     return {
       statusCode: 400,
       headers: { ...headers, "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Missing or invalid url parameter. Must be a Canvas calendar feed URL." }),
+      body: JSON.stringify({ error: "Missing url parameter." }),
     };
   }
 
@@ -28,6 +28,19 @@ export async function handler(event) {
       statusCode: 400,
       headers: { ...headers, "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Malformed URL." }),
+    };
+  }
+
+  // Only proxy https Canvas calendar feeds — anything else (other hosts,
+  // internal addresses, non-feed paths) is rejected to prevent SSRF.
+  const hostname = parsed.hostname.toLowerCase();
+  const isCanvasHost = hostname === "instructure.com" || hostname.endsWith(".instructure.com");
+
+  if (parsed.protocol !== "https:" || !isCanvasHost || !parsed.pathname.startsWith("/feeds/calendars/")) {
+    return {
+      statusCode: 400,
+      headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "URL must be an https Canvas (instructure.com) calendar feed." }),
     };
   }
 

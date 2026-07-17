@@ -1,20 +1,24 @@
 // planner.js — Weekly calendar view, shares localStorage with main.js
-import { STORAGE_KEY, loadTasks, saveTasks, createTask, validateForm, handleMenuToggle, setFooterDates } from "./utils.js";
+import {
+  loadTasks,
+  saveTasks,
+  createTask,
+  validateForm,
+  handleMenuToggle,
+  setFooterDates,
+  escapeHTML,
+  formatDate,
+  toDateStr,
+  getTodayStr,
+  loadPrefs,
+} from "./utils.js";
+import { getFeedUrl, syncCanvasTasks } from "./canvas-sync.js";
 
 let currentWeekOffset = 0;
 
+const MODAL_DATE_OPTS = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+
 // --- Date helpers ---
-
-function toDateStr(date) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
-function getTodayStr() {
-  return toDateStr(new Date());
-}
 
 function getWeekDates(offset) {
   const today = new Date();
@@ -27,15 +31,6 @@ function getWeekDates(offset) {
     const d = new Date(sunday);
     d.setDate(sunday.getDate() + i);
     return d;
-  });
-}
-
-function formatDate(dueDateStr) {
-  return new Date(dueDateStr + "T00:00:00").toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
   });
 }
 
@@ -64,13 +59,13 @@ export function renderCalendar() {
     const taskHTML = dayTasks.length > 0
       ? dayTasks.map((t) => `
           <div class="day-task-pill ${t.completed ? "day-task-completed" : ""}"
-               data-id="${t.id}"
-               data-priority="${t.priority}"
+               data-id="${escapeHTML(t.id)}"
+               data-priority="${escapeHTML(t.priority)}"
                role="button"
                tabindex="0"
-               aria-label="${t.name}, ${t.subject}, ${t.priority} priority${t.completed ? ", completed" : ""}">
+               aria-label="${escapeHTML(`${t.name}, ${t.subject}, ${t.priority} priority${t.completed ? ", completed" : ""}`)}">
             <span class="pill-dot" aria-hidden="true"></span>
-            <span class="pill-name">${t.name}</span>
+            <span class="pill-name">${escapeHTML(t.name)}</span>
           </div>
         `).join("")
       : `<p class="day-empty">No tasks</p>`;
@@ -103,18 +98,18 @@ export function openModal(taskId) {
   if (!task) return;
 
   const canvasLink = task.canvasUrl
-    ? `<a href="${task.canvasUrl}" target="_blank" rel="noopener noreferrer">Open in Canvas</a>`
+    ? `<a href="${escapeHTML(task.canvasUrl)}" target="_blank" rel="noopener noreferrer">Open in Canvas</a>`
     : null;
 
   document.querySelector("#modal-body").innerHTML = `
     <p>
-      <strong>Assignment:</strong> ${task.name}
-      <span class="modal-priority-badge badge-${task.priority}">${task.priority}</span>
+      <strong>Assignment:</strong> ${escapeHTML(task.name)}
+      <span class="modal-priority-badge badge-${escapeHTML(task.priority)}">${escapeHTML(task.priority)}</span>
     </p>
-    <p><strong>Subject:</strong> ${task.subject}</p>
-    <p><strong>Due:</strong> ${formatDate(task.dueDate)}</p>
+    <p><strong>Subject:</strong> ${escapeHTML(task.subject)}</p>
+    <p><strong>Due:</strong> ${formatDate(task.dueDate, MODAL_DATE_OPTS)}</p>
     <p><strong>Status:</strong> ${task.completed ? "&#10003; Completed" : "Incomplete"}</p>
-    ${task.notes ? `<p><strong>Notes:</strong> ${task.notes}</p>` : ""}
+    ${task.notes ? `<p><strong>Notes:</strong> ${escapeHTML(task.notes)}</p>` : ""}
     ${canvasLink ? `<p><strong>Canvas:</strong> ${canvasLink}</p>` : ""}
     <div class="modal-actions">
       <button class="button-outline" id="modal-toggle-complete">
@@ -164,7 +159,10 @@ function handleFormSubmit(event) {
   const tasks = loadTasks();
   const newTask = createTask(formData);
   tasks.push(newTask);
-  saveTasks(tasks);
+  if (!saveTasks(tasks)) {
+    errorEl.textContent = "Could not save the task — storage may be full or blocked.";
+    return;
+  }
 
   // Jump to the week containing the new task's due date
   const dueDate = new Date(formData["due-date"] + "T00:00:00");
@@ -182,15 +180,31 @@ function handleFormSubmit(event) {
   form.reset();
   setDefaultDate();
 
-  // Scroll calendar into view
-  document.querySelector("#calendar-grid").scrollIntoView({ behavior: "smooth", block: "start" });
+  // Scroll calendar into view (instantly for reduced-motion users)
+  const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelector("#calendar-grid").scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
 }
 
 // --- Default date ---
 
 function setDefaultDate() {
   const dateInput = document.querySelector("#planner-due-date");
-  if (dateInput) dateInput.value = getTodayStr();
+  if (dateInput) {
+    dateInput.value = getTodayStr();
+    dateInput.min = getTodayStr();
+  }
+}
+
+// --- Canvas auto-sync ---
+
+async function maybeAutoSyncCanvas() {
+  if (!(loadPrefs().autoSync && getFeedUrl())) return;
+  try {
+    const { added, updated } = await syncCanvasTasks();
+    if (added || updated) renderCalendar();
+  } catch {
+    // Sync errors are surfaced on the Settings page; keep page load quiet.
+  }
 }
 
 // --- Init ---
@@ -218,6 +232,8 @@ function init() {
   document.querySelector("#task-modal").addEventListener("click", (e) => {
     if (e.target === e.currentTarget) closeModal();
   });
+
+  maybeAutoSyncCanvas();
 }
 
 document.addEventListener("DOMContentLoaded", init);

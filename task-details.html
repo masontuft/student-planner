@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/home.css">
 
-  <script src="scripts/task-details.js" defer></script>
+  <script src="scripts/task-details.js" type="module"></script>
 </head>
 
 <body>
@@ -19,38 +19,45 @@
 
   <header class="site-header">
     <div class="header-content">
-      <h1>Study Buddy Planner</h1>
-      <p>Plan smarter. Study better. Stay organized.</p>
+      <a class="logo" href="index.html" aria-label="Study Buddy Planner home">
+        <img
+          class="logo-mark"
+          src="images/notebook-logo.svg"
+          alt=""
+          aria-hidden="true"
+        >
+        <span>Study Buddy Planner</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <button
+          id="menu-button"
+          class="menu-button"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+          aria-controls="nav-menu"
+        >
+          ☰
+        </button>
+
+        <ul id="nav-menu" class="nav-menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="planner.html">Planner</a></li>
+          <li><a href="studytips.html">Study Tips</a></li>
+
+          <li>
+            <a href="settings.html" class="settings-link" aria-label="Settings">
+              <span class="gear-icon" aria-hidden="true">⚙</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </header>
 
-  <nav class="main-nav" aria-label="Main navigation">
-  <button
-    id="menu-button"
-    class="menu-button"
-    aria-label="Open navigation menu"
-    aria-expanded="false"
-    aria-controls="nav-menu"
-  >
-    ☰
-  </button>
-
-  <ul id="nav-menu" class="nav-menu">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="planner.html">Planner</a></li>
-    <li><a href="studytips.html">Study Tips</a></li>
-
-    <li>
-      <a href="settings.html" class="settings-link" aria-label="Settings">
-        <span class="gear-icon" aria-hidden="true">⚙</span>
-      </a>
-    </li>
-  </ul>
-</nav>
-
   <main id="main-content">
     <section class="task-details-section">
-      <h2>Task Details</h2>
+      <h1>Task Details</h1>
       <p id="task-id-message">Loading task details...</p>
 
       <div id="task-details-card">
@@ -64,7 +71,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>&copy; <span id="current-year"></span> Study Buddy Planner</p>
+    <p>&copy; <span id="current-year"></span> Study Buddy Planner | WDD 231 Team Project</p>
     <p id="last-modified"></p>
   </footer>
 </body>

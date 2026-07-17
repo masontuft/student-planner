@@ -1,6 +1,7 @@
 // Shared utilities used across all pages.
 
 export const STORAGE_KEY = "studybuddy_tasks";
+export const PREFS_KEY = "studybuddy_prefs";
 
 // --- Storage ---
 
@@ -12,8 +13,33 @@ export function loadTasks() {
   }
 }
 
+// Returns false when the write fails (private browsing, quota exceeded).
 export function saveTasks(tasks) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// --- Preferences ---
+
+export function loadPrefs() {
+  try {
+    return JSON.parse(localStorage.getItem(PREFS_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+export function savePrefs(prefs) {
+  try {
+    localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 // --- Task factory ---
@@ -29,6 +55,35 @@ export function createTask(formData) {
     completed: false,
     createdAt: new Date().toISOString(),
   };
+}
+
+// --- Escaping ---
+
+// Escapes a value for safe interpolation into HTML text and attribute contexts.
+export function escapeHTML(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+// --- Dates ---
+
+export function toDateStr(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+export function getTodayStr() {
+  return toDateStr(new Date());
+}
+
+export function formatDate(dueDateStr, options = { year: "numeric", month: "short", day: "numeric" }) {
+  return new Date(dueDateStr + "T00:00:00").toLocaleDateString("en-US", options);
 }
 
 // --- Validation ---

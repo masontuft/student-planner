@@ -74,21 +74,21 @@
 
     <section class="summary-grid" aria-label="Planner summary">
       <article class="summary-card">
-        <span class="summary-number">3</span>
-        <h2>Tasks</h2>
-        <p>Sample tasks will display here later.</p>
+        <span class="summary-number" id="summary-open">0</span>
+        <h2>Open Tasks</h2>
+        <p>Assignments you still need to finish.</p>
       </article>
 
       <article class="summary-card">
-        <span class="summary-number">2</span>
-        <h2>Study Blocks</h2>
-        <p>Study sessions will be organized by day and class.</p>
+        <span class="summary-number" id="summary-due-week">0</span>
+        <h2>Due This Week</h2>
+        <p>Tasks with due dates in the next 7 days.</p>
       </article>
 
       <article class="summary-card">
-        <span class="summary-number">1</span>
-        <h2>Deadline</h2>
-        <p>Upcoming due dates will appear in this section.</p>
+        <span class="summary-number" id="summary-completed">0</span>
+        <h2>Completed</h2>
+        <p>Tasks you have checked off.</p>
       </article>
     </section>
 
@@ -104,6 +104,7 @@
           name="assignment-name"
           placeholder="Example: Math Chapter 5 Homework"
           required
+          maxlength="100"
         >
 
         <label for="subject">Class Subject</label>

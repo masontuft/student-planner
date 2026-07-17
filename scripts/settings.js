@@ -1,116 +1,21 @@
-// Proxies Canvas ICS feeds server-side to bypass CORS. Run locally with `netlify dev`.
-import { STORAGE_KEY, handleMenuToggle, setFooterDates } from "./utils.js";
-
-const CORS_PROXY = "/.netlify/functions/ics?url=";
-
-const STORAGE_KEY_FEED_URL = "canvas_feed_url";
-const STORAGE_KEY_PREFS    = "studybuddy_prefs";
-
-// --- Feed URL helpers ---
-
-function getFeedUrl() {
-  return localStorage.getItem(STORAGE_KEY_FEED_URL) || null;
-}
-
-function setFeedUrl(url) {
-  localStorage.setItem(STORAGE_KEY_FEED_URL, url);
-}
-
-function clearFeedUrl() {
-  localStorage.removeItem(STORAGE_KEY_FEED_URL);
-}
-
-// --- ICS fetch ---
-
-async function fetchICS(feedUrl) {
-  const res = await fetch(CORS_PROXY + encodeURIComponent(feedUrl));
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || `Proxy request failed (${res.status})`);
-  }
-  const text = await res.text();
-  if (!text.includes("BEGIN:VCALENDAR")) throw new Error("Response is not a valid ICS calendar.");
-  return text;
-}
-
-// --- ICS parser ---
-// Handles RFC 5545 line folding (continuation lines start with a space/tab).
-
-function parseICS(text) {
-  // Unfold folded lines
-  const unfolded = text.replace(/\r\n[ \t]/g, "").replace(/\n[ \t]/g, "");
-  const lines = unfolded.split(/\r\n|\n|\r/);
-
-  const events = [];
-  let current = null;
-
-  for (const line of lines) {
-    if (line === "BEGIN:VEVENT") {
-      current = {};
-      continue;
-    }
-    if (line === "END:VEVENT") {
-      if (current) events.push(current);
-      current = null;
-      continue;
-    }
-    if (!current) continue;
-
-    // Split on first colon, ignoring parameter sections (KEY;PARAM=val:VALUE)
-    const colonIdx = line.indexOf(":");
-    if (colonIdx === -1) continue;
-
-    const rawKey = line.slice(0, colonIdx);
-    const value  = line.slice(colonIdx + 1).trim();
-
-    // Strip parameters (e.g. DTSTART;TZID=America/Denver → DTSTART)
-    const key = rawKey.split(";")[0].toUpperCase();
-    current[key] = value;
-  }
-
-  return events;
-}
-
-// Parses a DTSTART/DTEND value to a YYYY-MM-DD string.
-// Handles both all-day (20260613) and datetime (20260613T060000Z) forms.
-function icsDateToYMD(value) {
-  if (!value) return null;
-  // Strip timezone prefix if present (e.g. TZID=...: was already stripped above)
-  const clean = value.replace(/^.*:/, "");
-  const digits = clean.replace(/\D/g, "");
-  if (digits.length < 8) return null;
-  return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6, 8)}`;
-}
-
-// Converts a Canvas calendar URL to a direct assignment URL.
-// Canvas ICS URL field: /calendar?event_id=assignment_<assignmentId>_<courseId>
-// Direct assignment URL: /courses/<courseId>/assignments/<assignmentId>
-function canvasDirectUrl(url) {
-  if (!url) return "";
-  try {
-    const parsed     = new URL(url);
-    const courseId   = (new URLSearchParams(parsed.search).get("include_contexts") || "").replace("course_", "");
-    const assignId   = parsed.hash.replace("#assignment_", "");
-    if (courseId && assignId && /^\d+$/.test(courseId) && /^\d+$/.test(assignId))
-      return `https://${parsed.hostname}/courses/${courseId}/assignments/${assignId}`;
-  } catch {}
-  return url;
-}
-
-// Canvas puts "[Course Code]" at the end of assignment summaries.
-// e.g. "Chapter 5 Quiz [WDD 231]" → { name: "Chapter 5 Quiz", course: "WDD 231" }
-function parseSummary(summary) {
-  const match = summary.match(/^(.+?)\s*\[(.+?)\]\s*$/);
-  if (match) return { name: match[1].trim(), course: match[2].trim() };
-  return { name: summary.trim(), course: "" };
-}
+// Settings page: Canvas connection UI, app preferences, and data clearing.
+// Canvas fetch/parse/merge logic lives in canvas-sync.js.
+import { STORAGE_KEY, loadPrefs, savePrefs, escapeHTML, handleMenuToggle, setFooterDates } from "./utils.js";
+import {
+  getFeedUrl,
+  setFeedUrl,
+  clearFeedUrl,
+  fetchICS,
+  icsDateToYMD,
+  parseSummary,
+  syncCanvasTasks,
+} from "./canvas-sync.js";
 
 // --- Sync ---
 
 export async function syncAssignments() {
   const syncBtn      = document.querySelector("#canvas-sync-btn");
   const coursesNote  = document.querySelector("#canvas-courses-note");
-  const courseList   = document.querySelector("#canvas-course-list");
   const lastSynced   = document.querySelector("#canvas-last-synced");
 
   syncBtn.disabled    = true;
@@ -119,36 +24,18 @@ export async function syncAssignments() {
   coursesNote.textContent = "Fetching your Canvas calendar…";
 
   try {
-    const feedUrl = getFeedUrl();
-    if (!feedUrl) throw new Error("No feed URL saved.");
+    const { assignments, added, updated, saved } = await syncCanvasTasks();
+    if (!saved) throw new Error("Could not save to this device's storage.");
 
-    const icsText = await fetchICS(feedUrl);
-    const events  = parseICS(icsText);
-
-    // Keep only assignment events that have a due date
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const todayStr = [
-      today.getFullYear(),
-      String(today.getMonth() + 1).padStart(2, "0"),
-      String(today.getDate()).padStart(2, "0"),
-    ].join("-");
-
-    const assignments = events.filter((e) => {
-      const isAssignment =
-        (e.UID    && e.UID.includes("assignment")) ||
-        (e.CATEGORIES && e.CATEGORIES.toLowerCase().includes("assignment"));
-      const dueDate = icsDateToYMD(e.DTSTART || e.DTEND);
-      return isAssignment && dueDate && dueDate >= todayStr;
-    });
-
-    mergeCanvasAssignments(assignments);
     renderAssignmentPreview(assignments);
 
     const count = assignments.length;
     syncBtn.textContent = `Synced ${count} assignment${count !== 1 ? "s" : ""}`;
-    lastSynced.textContent = `Last synced: ${new Date().toLocaleTimeString()}`;
+
+    const parts = [];
+    if (added) parts.push(`${added} new`);
+    if (updated) parts.push(`${updated} updated`);
+    lastSynced.textContent = `Last synced: ${new Date().toLocaleTimeString()}${parts.length ? ` (${parts.join(", ")})` : ""}`;
     lastSynced.hidden = false;
     coursesNote.hidden = true;
 
@@ -159,33 +46,6 @@ export async function syncAssignments() {
     syncBtn.disabled = false;
     setTimeout(() => { syncBtn.textContent = "Sync Assignments Now"; }, 3000);
   }
-}
-
-export function mergeCanvasAssignments(events) {
-  const existing  = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-  const canvasIds = new Set(existing.filter((t) => t.canvasId).map((t) => t.canvasId));
-
-  const newTasks = events
-    .filter((e) => !canvasIds.has(e.UID))
-    .map((e) => {
-      const dueDate = icsDateToYMD(e.DTSTART || e.DTEND);
-      const { name, course } = parseSummary(e.SUMMARY || "Untitled Assignment");
-      return {
-        id:        crypto.randomUUID(),
-        canvasId:  e.UID,
-        canvasUrl: canvasDirectUrl(e.URL),
-        name,
-        subject:   course || "Canvas",
-        dueDate,
-        priority:  "Medium",
-        notes:     "",
-        completed: false,
-        createdAt: new Date().toISOString(),
-        source:    "canvas",
-      };
-    });
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...existing, ...newTasks]));
 }
 
 function renderAssignmentPreview(events) {
@@ -203,8 +63,8 @@ function renderAssignmentPreview(events) {
       const { name, course } = parseSummary(e.SUMMARY || "Untitled");
       const due = icsDateToYMD(e.DTSTART || e.DTEND);
       return `<li class="canvas-course-item">
-        <span class="canvas-course-name">${name}</span>
-        <span class="canvas-course-code">${course ? `${course} · ` : ""}${due || ""}</span>
+        <span class="canvas-course-name">${escapeHTML(name)}</span>
+        <span class="canvas-course-code">${course ? `${escapeHTML(course)} · ` : ""}${escapeHTML(due || "")}</span>
       </li>`;
     })
     .join("");
@@ -273,7 +133,9 @@ async function handleFeedFormSubmit(event) {
   try {
     // Do a test fetch to validate the URL before saving
     await fetchICS(feedUrl);
-    setFeedUrl(feedUrl);
+    if (!setFeedUrl(feedUrl)) {
+      throw new Error("Could not save the feed URL on this device — storage may be full or blocked.");
+    }
     showConnectedState();
     // Auto-sync on first connect
     await syncAssignments();
@@ -287,24 +149,12 @@ async function handleFeedFormSubmit(event) {
 
 // --- Preferences ---
 
-function loadPrefs() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY_PREFS)) || {};
-  } catch {
-    return {};
-  }
-}
-
-function savePrefs(prefs) {
-  localStorage.setItem(STORAGE_KEY_PREFS, JSON.stringify(prefs));
-}
-
 function initPrefs() {
-  const prefs        = loadPrefs();
+  const prefs         = loadPrefs();
   const showCompleted = document.querySelector("#pref-show-completed");
   const autoSync      = document.querySelector("#pref-auto-sync");
 
-  showCompleted.checked = prefs.showCompleted ?? false;
+  showCompleted.checked = prefs.showCompleted ?? true;
   autoSync.checked      = prefs.autoSync      ?? false;
 
   showCompleted.addEventListener("change", () => {
@@ -354,6 +204,7 @@ function init() {
   // Restore connection state
   if (getFeedUrl()) {
     showConnectedState();
+    if (loadPrefs().autoSync) syncAssignments();
   } else {
     showDisconnectedState();
   }
