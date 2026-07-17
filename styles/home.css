@@ -481,6 +481,47 @@ h1 {
   background: #dce7ff;
 }
 
+/* --- Task details page --- */
+
+.task-details-section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 2rem;
+  margin: 2rem 0;
+}
+
+.task-details-section h1 {
+  color: var(--color-primary-dark);
+  margin: 0 0 0.5rem;
+}
+
+#task-id-message {
+  color: var(--color-muted);
+  margin: 0 0 1.5rem;
+}
+
+#task-details-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  background: var(--color-bg);
+}
+
+#task-details-card h2 {
+  color: var(--color-primary-dark);
+  margin: 0 0 1rem;
+}
+
+#task-details-card p {
+  margin: 0 0 0.6rem;
+}
+
+.task-details-section > p {
+  margin-top: 1.5rem;
+}
+
 /* --- Responsive --- */
 @media (max-width: 760px) {
   .hero-section {
